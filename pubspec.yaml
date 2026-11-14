@@ -6,6 +6,9 @@ publish_to: none
 environment:
   sdk: ^3.11.0
 
+executables:
+  label: flutter_label_tool
+
 dependencies:
   analyzer: ^10.2.0
   args: ^2.7.0

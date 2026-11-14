@@ -2,17 +2,35 @@
 
 Scan Flutter source for hardcoded UI copy and migrate selected strings to your English catalog. This standalone Dart package requires Dart 3.11 or later.
 
-From the Flutter app root, set up the tool and run the scanner:
+## Install
+
+Install from GitHub using Dart:
 
 ```sh
-(cd flutter_label_tool && dart pub get)
-dart flutter_label_tool/bin/flutter_label_tool.dart scan
+dart pub global activate --source git https://github.com/InfinitieParasgiri/flutter_label_tool.git
+```
+
+For a local clone, use `dart pub global activate --source path /path/to/flutter_label_tool`.
+If your shell cannot find `label`, add Dart's pub cache bin directory to your PATH.
+On macOS and Linux, add this line to your shell configuration:
+
+```sh
+export PATH="${PUB_CACHE:-$HOME/.pub-cache}/bin:$PATH"
+```
+
+If you previously defined a `label` alias, remove it from your shell configuration and open a new terminal to use the installed executable.
+
+Run from your Flutter project root:
+
+```sh
+label scan
+label extract
 ```
 
 `scan` reports the file, line, column, and widget argument. It recognizes common cases such as `Text`, `TextSpan`, tooltips, form hints, accessibility labels, and News United's `CustomeText` and `CustomSnackbar.show`. Use `scan --json` for machine-readable output or `scan --check` to exit with code 1 when findings exist. Invalid input or CLI usage exits with code 2. Repeat `--source` before the command to limit the scan to files or directories. It defaults to `lib`.
 
 ```sh
-dart flutter_label_tool/bin/flutter_label_tool.dart --source lib/screens/settings.dart scan
+label --source lib/screens/settings.dart scan
 ```
 
 ## Extract to AppLabels
@@ -20,7 +38,7 @@ dart flutter_label_tool/bin/flutter_label_tool.dart --source lib/screens/setting
 The tool defaults to `languages/en.json` and `lib/utils/app_labels.dart` in this app. Copy the actual location from `scan` into `--at`. The following location is an example.
 
 ```sh
-dart flutter_label_tool/bin/flutter_label_tool.dart extract \
+label extract \
   --at lib/screens/settings.dart:42:18 --section settings --key privacyTitle
 ```
 
@@ -35,8 +53,7 @@ Omit `--at` to preview all supported edits within the source selection. Review t
 Set up the target Flutter project's localization delegates and supported locales first. The tool reads `l10n.yaml` for the ARB directory, template filename, output directory, generated filename, and generated class name. Its defaults are `lib/l10n/app_en.arb` and `lib/l10n/app_localizations.dart`. The English template must already exist.
 
 ```sh
-cd flutter_label_tool
-dart run flutter_label_tool --root /path/to/flutter_app extract \
+label --root /path/to/flutter_app extract \
   --mode arb --at lib/screens/settings.dart:42:18 --key privacyTitle
 ```
 
